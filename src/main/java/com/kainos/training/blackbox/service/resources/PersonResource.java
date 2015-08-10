@@ -13,7 +13,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 @Produces(MediaType.APPLICATION_JSON)
 public class PersonResource {
     private List<Person> people = new ArrayList<Person>();
+    private int nextId = 0;
 
     @GET
     public List<Person> getPeople() {
@@ -29,14 +29,16 @@ public class PersonResource {
 
     @POST
     public List<Person> addPerson(Person person) {
+        person.id = nextId;
+        nextId++;
+
         people.add(person);
         return people;
     }
 
     @DELETE
-    @Path("{index}")
-    public List<Person> removePerson(@PathParam("index") Integer index) {
-        people.remove(index);
+    @Path("/{id}")
+    public List<Person> removePerson(@PathParam("id") Integer id) {
         return people;
     }
 }
